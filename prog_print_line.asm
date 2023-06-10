@@ -3,7 +3,7 @@ SECTION header vstart=0
     code_entry      dw start                            ; [0x04] offset of the code entry point.
                     dd section.code_1.start             ; [0x06] code entry address.
     
-    realloc_tbl_len dw (header_end-code_1_segment) / 4  ; [0x0a]
+    realloc_tbl_len dw (header_end - code_1_segment) / 4  ; [0x0a]
     code_1_segment  dd section.code_1.start             ; [0x0c]
     code_2_segment  dd section.code_2.start             ; [0x10]
     data_1_segment  dd section.data_1.start             ; [0x14]
