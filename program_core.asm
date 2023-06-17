@@ -6,7 +6,7 @@
          core_stack_seg_sel    equ  0x18 
          mem_0_4_gb_seg_sel    equ  0x08
 
-         ; Head section (starting at offset 0x0).
+         ; Header section (starting at offset 0x0).
          core_length      dd core_end                      ; The size of the kernel.
          sys_routine_seg  dd section.sys_routine.start     ; Offset of the routine section. 
          core_data_seg    dd section.core_data.start       ; Offset of the core data section.
@@ -453,7 +453,7 @@ load_relocate_program:
          push ecx
 
          mov ecx, 64                                  ; 256 / 4 = 64.
-         repe cmpsd                                   ; Compare via de:esi (kernel) and es:edi (app).
+         repe cmpsd                                   ; Compare via ds:esi (kernel) and es:edi (app).
          jnz .b4                                      ; If same, ZF = 1.
          mov eax, [esi]                               ; Otherwise, update routine selector and offset into app header.
          mov [es:edi - 256], eax                      ; Update offset (4 bytes).
@@ -486,14 +486,14 @@ load_relocate_program:
          ret
       
 ;-------------------------------------------------------------------------------
-start:   // Entry of the kernel code.
+start:   ; Entry of the kernel code.
          mov ecx, core_data_seg_sel 
          mov ds, ecx                             ; Initialize ds segment register.
 
          mov ebx, message_1
          call sys_routine_seg_sel:put_string     ; Call public routine.
 
-         // Get CPU information.
+         ; Get CPU information.
          mov eax, 0x80000002
          cpuid
          mov [cpu_brand + 0x00], eax

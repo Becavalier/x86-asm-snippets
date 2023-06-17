@@ -1,22 +1,22 @@
        
         ; GDT structure after the kernel has been loaded.
-        ; -------------------------------------------
-        ; |          kernel - core code             |  0x38
-        ; -------------------------------------------
-        ; |          kernel - core data             |  0x30
-        ; -------------------------------------------
-        ; |          routine (000400000 ~)          |  0x28
-        ; -------------------------------------------
-        ; |   visual memory (000b8000 ~ 000bffff)   |  0x20
-        ; -------------------------------------------
-        ; |   initial stack (00006c00 ~ 00007c00)   |  0x18
-        ; -------------------------------------------
-        ; |   initial code (00007c00 ~ 00007dff)    |  0x10
-        ; -------------------------------------------
-        ; |    0~4GB data (00000000 ~ ffffffff)     |  0x08
-        ; -------------------------------------------
-        ; |                  NULL                   |  0x00
-        ; -------------------------------------------
+        ; ----------------------------------------------------
+        ; |          kernel - core code (DPL = 0)            |  0x38
+        ; ----------------------------------------------------
+        ; |          kernel - core data (DPL = 0)            |  0x30
+        ; ----------------------------------------------------
+        ; |          routine (000400000 ~, DPL = 0)          |  0x28
+        ; ----------------------------------------------------
+        ; |   visual memory (000b8000 ~ 000bffff, DPL = 0)   |  0x20
+        ; ----------------------------------------------------
+        ; |   initial stack (00006c00 ~ 00007c00, DPL = 0)   |  0x18
+        ; ----------------------------------------------------
+        ; |   initial code (00007c00 ~ 00007dff, DPL = 0)    |  0x10
+        ; ----------------------------------------------------
+        ; |    0~4GB data (00000000 ~ ffffffff, DPL = 0)     |  0x08
+        ; ----------------------------------------------------
+        ; |                  NULL                            |  0x00
+        ; ----------------------------------------------------
 
          core_base_address equ 0x00040000     ; The location of memory it will be loaded into.
          core_start_sector equ 0x00000001     ; The starting sector of kernel program.
@@ -25,7 +25,7 @@
          mov ss, ax 
          mov sp, 0x7c00                       ; Stack starts at 0x7c00, going downward.
       
-         mov eax, [cs:pgdt + 0x7c00 + 0x02]   ; Load the fulllinear memory of GDT.
+         mov eax, [cs:pgdt + 0x7c00 + 0x02]   ; Load the full linear memory of GDT.
          xor edx, edx
          mov ebx, 16
          div ebx                              ; Get segment address of GDT.
