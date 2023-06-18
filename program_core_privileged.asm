@@ -716,41 +716,41 @@ start:
          call sys_routine_seg_sel:put_string     ; Call public routine.
                                          
          ; Get CPU information.
-         mov eax,0x80000002
+         mov eax, 0x80000002
          cpuid
-         mov [cpu_brand + 0x00],eax
-         mov [cpu_brand + 0x04],ebx
-         mov [cpu_brand + 0x08],ecx
-         mov [cpu_brand + 0x0c],edx
+         mov [cpu_brand + 0x00], eax
+         mov [cpu_brand + 0x04], ebx
+         mov [cpu_brand + 0x08], ecx
+         mov [cpu_brand + 0x0c], edx
       
-         mov eax,0x80000003
+         mov eax, 0x80000003
          cpuid
-         mov [cpu_brand + 0x10],eax
-         mov [cpu_brand + 0x14],ebx
-         mov [cpu_brand + 0x18],ecx
-         mov [cpu_brand + 0x1c],edx
+         mov [cpu_brand + 0x10], eax
+         mov [cpu_brand + 0x14], ebx
+         mov [cpu_brand + 0x18], ecx
+         mov [cpu_brand + 0x1c], edx
 
-         mov eax,0x80000004
+         mov eax, 0x80000004
          cpuid
-         mov [cpu_brand + 0x20],eax
-         mov [cpu_brand + 0x24],ebx
-         mov [cpu_brand + 0x28],ecx
-         mov [cpu_brand + 0x2c],edx
+         mov [cpu_brand + 0x20], eax
+         mov [cpu_brand + 0x24], ebx
+         mov [cpu_brand + 0x28], ecx
+         mov [cpu_brand + 0x2c], edx
 
-         mov ebx,cpu_brnd0 
+         mov ebx, cpu_brnd0 
          call sys_routine_seg_sel:put_string
-         mov ebx,cpu_brand
+         mov ebx, cpu_brand
          call sys_routine_seg_sel:put_string
-         mov ebx,cpu_brnd1
+         mov ebx, cpu_brnd1
          call sys_routine_seg_sel:put_string
 
          ; Install call gates.
          mov edi, salt                                       ; Load the address of kernel SALT.
-         mov ecx, salt_items                                 ; Iteration time (gates)
+         mov ecx, salt_items                                 ; Set iteration time (for gates).
   .b3:
          push ecx
-         mov eax, [edi + 256]                                ; Move offset to eax.
-         mov bx, [edi + 260]                                 ; Move segment selector to bx.
+         mov eax, [edi + 256]                                ; Move routine offset to eax.
+         mov bx, [edi + 260]                                 ; Move routine segment selector to bx.
          mov cx, 1_11_0_1100_000_00000B                      ; Move gate attribute to cx (P = 1, DPL = 3).
                  
                                            
