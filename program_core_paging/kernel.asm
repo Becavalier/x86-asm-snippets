@@ -1,4 +1,38 @@
 
+
+        ; ----------------------------------------------------                  -|
+        ; |              Text Mode Visual Buffer             |                   |
+        ; |                  (Selector: 0x20)                |                   |
+        ; ----------------------------------------------------  0x000b8000       |
+        ; ~                                                  ~                   |
+        ; ----------------------------------------------------                   |
+        ; |        Kernel Code Segment (Selector: 0x38)      |                   |
+        ; |        Kernel Data Segment (Selector: 0x30)      |                   |
+        ; |  Kernel Public Routines Segment (Selector: 0x28) |                   |
+        ; ----------------------------------------------------  0x00040000       |- 0~4GB Data Segment
+        ; ~                                                  ~                   |   (Selector: 0x08)
+        ; ----------------------------------------------------                   |
+        ; |                  Kernel's first PT               |                   |
+        ; ----------------------------------------------------  0x00021000       |
+        ; |                     Kernel PDT                   |                   |  
+        ; ----------------------------------------------------  0x00020000       |
+        ; ~                                                  ~                   | 
+        ; ----------------------------------------------------                   |
+        ; |                 TCB for Kernel Tasks             |                   |  
+        ; ----------------------------------------------------  0x0001f800       |
+        ; |                     Global IDT                   |                   |  
+        ; ----------------------------------------------------  0x0001f000       |
+        ; ~                                                  ~                   | 
+        ; ----------------------------------------------------                   |
+        ; |                     Global GDT                   |                   |  
+        ; ----------------------------------------------------  0x00007e00       |
+        ; |                 Initial Code (MBR)               |                   |  
+        ; ----------------------------------------------------  0x00007c00       |
+        ; |                    Kernel Stack                  |                   |
+        ; |                  (Selector: 0x18)                |                   | 
+        ; ----------------------------------------------------  0x00006c00      -|
+        ; ~                                                  ~
+     
          core_code_seg_sel     equ  0x38 
          core_data_seg_sel     equ  0x30 
          sys_routine_seg_sel   equ  0x28  
@@ -1162,8 +1196,7 @@ start:
          inc esi
          cmp esi, 255                                    ; Create the remaining 236 IDT entires.
          jle .idt1
-
-         ; Install the interrupt gate for switching tasks.
+   
          mov eax, rtm_0x70_interrupt_handle 
          mov bx, sys_routine_seg_sel
          mov cx, 0x8e00 
@@ -1245,10 +1278,6 @@ start:
          call sys_routine_seg_sel:put_string
          mov ebx, cpu_brnd1
          call sys_routine_seg_sel:put_string
-
-
-
-
 
          mov ecx, 1024                                  ; Zero PDT area (set P = 1).
          mov ebx, 0x00020000                            ; Physical address of the PDT table.
